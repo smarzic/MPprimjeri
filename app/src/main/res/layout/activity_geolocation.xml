@@ -152,17 +152,20 @@
             android:id="@+id/btnLocate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="Dohvati lokaciju"
             app:icon="@drawable/location_pin_solid"
             app:iconGravity="textStart"
             app:iconSize="20dp" />
 
-        <TextView
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="32dp"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/btnBack"

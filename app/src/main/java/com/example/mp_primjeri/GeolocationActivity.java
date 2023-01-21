@@ -19,23 +19,31 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import org.w3c.dom.DocumentFragment;
-
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class GeolocationActivity extends AppCompatActivity {
+public class GeolocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private ProgressBar progressBar;
     private TextView txtLat, txtLon, txtTime, txtSpeed, txtPrecision;
     private int REQ_LOCATION = 1;
     private String LOGTAG = "DANTE-LOG-geolocation";
     private FusedLocationProviderClient fusedLocationClient;
+    private GoogleMap mMap;
+    private MapView mapView;
+    private Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,11 @@ public class GeolocationActivity extends AppCompatActivity {
         txtPrecision = findViewById(R.id.txtPrecision);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // inicijalizacija karte
+        mapView =findViewById(R.id.mapView);
+        mapView.onCreate(null);
+        mapView.getMapAsync(this);
 
         Button btnLocate = findViewById(R.id.btnLocate);
         Activity thisActivity = this;
@@ -133,7 +146,7 @@ public class GeolocationActivity extends AppCompatActivity {
                 df.setMaximumFractionDigits(6);
                 float accuracy = location.getAccuracy(),
                         speed = location.getSpeed();
-                double latitude = location.getLongitude(),
+                double latitude = location.getLatitude(),
                         longitude = location.getLongitude();
                 long time = location.getTime();
 
@@ -141,10 +154,21 @@ public class GeolocationActivity extends AppCompatActivity {
                 txtLat.setText(df.format(latitude));
                 txtLon.setText(df.format(longitude));
 
+                if(mMap != null) {
+                    Log.i(LOGTAG, "Placing marker");
+                    if(marker == null) {
+                        Log.i(LOGTAG, "Adding marker (" + + latitude + ", " + longitude + ")");
+                        marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Last position"));
+                    } else {
+                        Log.i(LOGTAG, "Moving marker (" + + latitude + ", " + longitude + ")");
+                        marker.setPosition(new LatLng(latitude, longitude));
+                    }
+                }
+
                 df.setMinimumFractionDigits(2);
                 df.setMaximumFractionDigits(2);
 
-                txtSpeed.setText(df.format(speed) + " m/s");
+                txtSpeed.setText(df.format(speed) + " m/s (" + df.format(speed * 3.6) + " km/h)");
                 txtPrecision.setText(df.format(accuracy) + " m");
 
                 Date date = new Date(time);
@@ -160,5 +184,20 @@ public class GeolocationActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        Log.i(LOGTAG, "onMapReady");
+        mMap = googleMap;
+        LatLng rijeka = new LatLng(45.33573, 14.41609);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rijeka, 11f));
+        CameraPosition cp = googleMap.getCameraPosition();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
     }
 }
