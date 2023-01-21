@@ -21,5 +21,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button btnGeolocation = findViewById(R.id.btnGeolocation);
+        btnGeolocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), GeolocationActivity.class);
+                startActivity(i);
+            }
+        });
     }
 }
