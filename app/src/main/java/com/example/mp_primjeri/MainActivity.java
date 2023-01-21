@@ -30,5 +30,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button btnInternet = findViewById(R.id.btnInternet);
+        btnInternet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), InternetActivity.class);
+                startActivity(i);
+            }
+        });
     }
 }

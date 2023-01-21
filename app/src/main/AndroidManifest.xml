@@ -16,6 +16,9 @@
         android:theme="@style/Theme.MPprimjeri"
         tools:targetApi="31">
         <activity
+            android:name=".InternetActivity"
+            android:exported="false" />
+        <activity
             android:name=".GeolocationActivity"
             android:exported="false" />
         <activity
@@ -30,6 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="DOHVATITE_SVOJ_KLJUČ" />
