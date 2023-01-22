@@ -16,6 +16,9 @@
         android:theme="@style/Theme.MPprimjeri"
         tools:targetApi="31">
         <activity
+            android:name=".ListQuestionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".DatabaseActivity"
             android:exported="false" />
         <activity

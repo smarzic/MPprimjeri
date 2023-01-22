@@ -140,10 +140,18 @@ public class DatabaseActivity extends AppCompatActivity {
             return;
         }
 
+        int numQuestions = 100;
+        try {
+            numQuestions = Integer.parseInt(txtNum.getText().toString());
+        } catch (Exception e) {
+            //numQuestions = 100;
+        }
+
+
         // upit za dohvaćanje 10 pitanja
         //      -> RANDOM() je SQLite funkcija
         //      -> limit 10 -> vraća prvih 10 rezultata upita
-        Cursor questions = db.rawQuery("select id, question from questions order by RANDOM() limit 10", null);
+        Cursor questions = db.rawQuery("select id, question from questions order by RANDOM() limit " + numQuestions, null);
         String ret = "";
         int i = 1;
         while(questions.moveToNext()) {
@@ -185,7 +193,7 @@ public class DatabaseActivity extends AppCompatActivity {
     }
 
     // DB helper - nužno dodati za rad sa SQLite bazom
-    class QuestionDbHelper extends SQLiteOpenHelper {
+    static class QuestionDbHelper extends SQLiteOpenHelper {
 
         // konstante, verzija i naziv baze
         public static final int DATABASE_VERSION = 1;
