@@ -68,6 +68,22 @@ public class DatabaseActivity extends AppCompatActivity {
             }
         });
 
+        Button btnRead = findViewById(R.id.btnRead);
+        btnRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readQuestions();
+            }
+        });
+
+        Button btnStat = findViewById(R.id.btnStat);
+        btnStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshData();
+            }
+        });
+
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +124,25 @@ public class DatabaseActivity extends AppCompatActivity {
 
         txtData.setText(ret);
 
+    }
+
+    private void readQuestions() {
+        if(db == null) {
+            return;
+        }
+        Cursor questions = db.rawQuery("select id, question from questions order by RANDOM() limit 10", null);
+        String ret = "";
+        int i = 1;
+        while(questions.moveToNext()) {
+            ret += i + ".  <b>" + questions.getString(1) + "</b><br />";
+            Cursor answers = db.rawQuery("select answer, correct from answers where questionId=? order by RANDOM()", new String[]{questions.getString(0)});
+            while(answers.moveToNext()) {
+                ret += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + answers.getString(0) + " (" + answers.getString(1) + ")<br />";
+            }
+            ret += "<br />";
+            i++;
+        }
+        txtData.setText(Html.fromHtml(ret, Html.FROM_HTML_MODE_COMPACT));
     }
 
     class QuestionDbHelper extends SQLiteOpenHelper {
