@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // dohvaćanje svakog gumba i otvaranje odgovarajućeg ekrana (aktivnosti)
         Button btnAkcelerometar = findViewById(R.id.btnAkcelerometar);
         btnAkcelerometar.setOnClickListener(new View.OnClickListener() {
             @Override

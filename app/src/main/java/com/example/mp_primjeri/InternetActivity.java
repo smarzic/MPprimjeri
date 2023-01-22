@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 
 public class InternetActivity extends AppCompatActivity {
 
+    // varijable na razini klase (atributi), dostupni u svim funkcijama (metodama) unutar klase
     private String LOGTAG = "DANTE-LOG-internet";
     private String strURL = "https://opentdb.com/api.php?amount=";
     private TextView txtData, txtNum;
@@ -32,6 +33,8 @@ public class InternetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_internet);
 
+        // inicijalizacija - dohvaćanje svih resursa koje ćemo kasnije koristiti
+        // da ih ne treba svaki put dohvaćati
         txtData = findViewById(R.id.txtData);
         txtNum = findViewById(R.id.txtNum);
 
@@ -39,11 +42,12 @@ public class InternetActivity extends AppCompatActivity {
         btnFetch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // pokretanje asinkronog dohvaćanja pitanja, šaljemo URL + broj iz polja
                 new FetchTask().execute(strURL + txtNum.getText());
             }
         });
 
+        // povratak na početni ekran
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,21 +59,25 @@ public class InternetActivity extends AppCompatActivity {
         });
     }
 
+    // klasa za dohvaćanje podataka definirana je unutar klase InternetActivity, tako ona može jednostavno koristiti metode i atribute vanjske klase
     class FetchTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;
         private String LOGTAG = "DANTE-LOG-internet-task";
 
+        // prikaz loading prozorčića prije početka obrade
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(InternetActivity.this, "Dohvaćanje podataka", "Molimo pričekajte...");
         }
 
+        // obrada podataka nakon dohvaćanja
         @Override
         protected void onPostExecute(String s) {
             progressDialog.setTitle("Obrada podataka");
 
             txtData.setText("");
 
+            // čitanje dobivenih podataka
             try {
                 JSONObject json = new JSONObject(s);
                 Log.i(LOGTAG, "JSON processed");
@@ -89,6 +97,7 @@ public class InternetActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
 
+        // dohvaćanje podataka s interneta
         @Override
         protected String doInBackground(String... strings) {
             String strUrl = strings[0];
@@ -96,6 +105,7 @@ public class InternetActivity extends AppCompatActivity {
 
             String res = "";
             try {
+                // čitanje podataka s interneta - od URL-a kao string (strUrl), do rezultata (res)
                 URL url = new URL(strUrl);
                 StringBuilder builder = new StringBuilder();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));

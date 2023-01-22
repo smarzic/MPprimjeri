@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 
 public class AccelerometerActivity extends AppCompatActivity {
 
+    // varijable na razini klase (atributi), dostupni u svim funkcijama (metodama) unutar klase
     private String LOGTAG = "DANTE-LOG-accelerometer";
     private MediaPlayer bell1, bell2;
     private SensorManager sensorManager;
@@ -31,7 +32,8 @@ public class AccelerometerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accelerometer);
 
-        // inicijalizacija
+        // inicijalizacija - dohvaćanje svih resursa koje ćemo kasnije koristiti
+        // da ih ne treba svaki put dohvaćati
         bell1 = MediaPlayer.create(this, R.raw.bell_123742);
         bell2 = MediaPlayer.create(this, R.raw.church_bell_5993);
         df = new DecimalFormat("+##0.00000;-##0.00000");
@@ -48,15 +50,17 @@ public class AccelerometerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
-                //
+                // osim izlaska iz aktivonsti, ovdje još mičemo listener senzora (inače bi nastavio obrađivati očitanja sa senzora)
                 sensorManager.unregisterListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
                 finish();
             }
         });
 
-        // akcelerometar
+        // akcelerometar - dobivanje varijable (objekta) za rad sa senzorom
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        // definiranje listenera za senzor (što će se dogoditi na svakom očitanju)
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -95,6 +99,7 @@ public class AccelerometerActivity extends AppCompatActivity {
             }
         };
 
+        // dodjeljivanje listenera senzoru
         sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
 
